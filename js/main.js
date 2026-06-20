@@ -48,13 +48,29 @@ formulario.addEventListener('submit', (evento) => {
     btnSubmit.innerHTML = 'Enviando solicitud... ⏳';
     btnSubmit.style.opacity = '0.7';
 
-    setTimeout(() => {
-        formulario.style.display = 'none';
-        mensajeExito.classList.remove('oculto');
+    const urlFormspree = "https://formspree.io/f/mlgkqadw";
 
-        const datos = new FormData(formulario);
-        console.log("Nombre:", datos.get('nombre'));
-        console.log("Teléfono:", datos.get('telefono'));
-        console.log("Prioridad:", datos.get('servicio'));
-    }, 2000);
+    fetch(urlFormspree, {
+        method: 'POST',
+        body: new FormData(formulario),
+        headers: {
+            'Accept': 'application/json'
+        }
+    })
+    .then(respuesta => {
+        if(respuesta.ok) {
+            formulario.style.display = 'none';
+            mensajeExito.classList.remove('oculto');
+        } else {
+            alert("Hubo un problema al envia la solicitud. Por favor intenta de nuevo");
+            btnSubmit.innerHTML = textoOriginal;
+            btnSubmit.style.opacity = '1';
+        }
+    })
+    .catch(error => {
+        alert("Error de conexión. Revisa tu internet");
+        btnSubmit.innerHTML = textoOriginal;
+        btnSubmit.style.opacity = '1';
+    });
+
 });
